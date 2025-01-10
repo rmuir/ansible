@@ -437,6 +437,7 @@ import os
 import re
 import shutil
 import tempfile
+import urllib
 
 from ansible.module_utils.basic import AnsibleModule, sanitize_keys
 from ansible.module_utils.six import binary_type, iteritems, string_types
@@ -509,20 +510,7 @@ def absolute_location(url, location):
     next URL, specifically in the case of a ``Location`` header.
     """
 
-    if '://' in location:
-        return location
-
-    elif location.startswith('/'):
-        parts = urlsplit(url)
-        base = url.replace(parts[2], '')
-        return '%s%s' % (base, location)
-
-    elif not location.startswith('/'):
-        base = os.path.dirname(url)
-        return '%s/%s' % (base, location)
-
-    else:
-        return location
+    return urllib.parse.urljoin(url, location)
 
 
 def kv_list(data):
